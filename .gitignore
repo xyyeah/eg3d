@@ -1,5 +1,6 @@
 images/
 .DS_Store
+.vscode
 .ipynb_checkpoints
 data
 output
