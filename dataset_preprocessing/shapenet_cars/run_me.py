@@ -19,7 +19,7 @@ if __name__ == '__main__':
     with tempfile.TemporaryDirectory() as working_dir:
         download_name = 'cars_train.zip'
         url = 'https://drive.google.com/uc?id=1bThUNtIHx4xEQyffVBSf82ABDDh2HlFn'
-        output_dataset_name = 'cars_128.zip'
+        output_dataset_name = 'cars_128_2.zip'
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
         extracted_data_path = os.path.join(working_dir, os.path.splitext(download_name)[0])

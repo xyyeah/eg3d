@@ -1,7 +1,7 @@
 FROM nvidia/cuda:11.7.0-devel-ubuntu20.04
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV CUDNN_VERSION=8.4.1.50-1+cuda11.6
+ENV CUDNN_VERSION=8.5.0.96-1+cuda11.7
 ENV NCCL_VERSION=2.13.4-1+cuda11.7
 
 
@@ -11,7 +11,7 @@ ENV PYTHON_VERSION=${python}
 # Set default shell to /bin/bash
 SHELL ["/bin/bash", "-cu"]
 
-RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+#RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 RUN apt-get clean
 RUN apt-get update && apt-get install openssh-server -y
 RUN service ssh start
@@ -64,8 +64,8 @@ WORKDIR /app
 
 # Create a non-root user and switch to it
 RUN adduser --disabled-password --gecos '' --shell /bin/bash liulj \
- && chown -R liulj:user /app
-RUN echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-user
+ && chown -R liulj:liulj /app
+RUN echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-liulj
 USER liulj
 
 # All users can use /home/user as their home directory
@@ -81,14 +81,16 @@ RUN curl -sLo ~/miniconda.sh https://mirrors.tuna.tsinghua.edu.cn/anaconda/minic
  && rm ~/miniconda.sh \
  && conda install -y python==3.8.3 \
  && conda clean -ya
-COPY --chown=liulj docker/.condarc /home/liulj/.condarc
+RUN conda config --set show_channel_urls yes 
+# && ls -alh && pwd && ls /home/liulj -alh
+# COPY --chown=liulj .condarc /home/liulj/.condarc
 
 RUN cd /home/liulj
 RUN conda config --env --set always_yes true
 RUN conda update -n base -c defaults conda -y
 
-COPY environment.yaml environment.yaml
-RUN conda env create -f environment.yaml
+COPY environment.yml environment.yml
+RUN conda env create -f environment.yml
 
 RUN conda init bash 
 
